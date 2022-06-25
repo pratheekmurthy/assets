@@ -7,7 +7,7 @@ export default function CardWithBadge({ CardCount, CardTitle }) {
             <Card sx={{ p: 1 ,backgroundColor: purple[200]}}>
                 <Grid container spacing={2}>
                     <Grid item xs={10}>
-                        <Typography variant="p">{CardTitle}</Typography>
+                        <Typography variant="p">{CardTitle} ({CardCount})</Typography>
                     </Grid>
                     <Grid item xs={2}>
                         <Badge badgeContent={CardCount} color="error" />

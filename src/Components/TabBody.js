@@ -1,7 +1,7 @@
 import CardWithBadge from './CardWithBadge';
 import { Divider, Grid, Typography, Box } from '@mui/material';
 
-export default function TabBody({ CardTitleArray }) {
+export default function TabBody({ CardTitleArray  }) {
     return (
         <>{
             CardTitleArray.title.map((card, i) => (

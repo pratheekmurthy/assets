@@ -44,7 +44,7 @@ function a11yProps(index) {
 export default function TabComponent() {
   const [value, setValue] = useState(0);
   const [TotalCount, SetTotalCount] = useState([]);
-  const [DDSiteCount, SetDDSiteCount] = useState([]);
+  const [DDAssetsCount, SetDDAssetsCount] = useState([]);
   const [VendorAssets, SetVendorAssets] = useState([]);
 
   const handleChange = (event, newValue) => {
@@ -54,32 +54,31 @@ export default function TabComponent() {
   const tabArray1 = {
     title: ["Total Assets Dashboard"],
     cardTitle: [
-      `Total Asset (${TotalCount.Total})`,
-      `Deploy on FLoor (${TotalCount.DeployFLoor})`,
-      `In Stock (${TotalCount.InStock})`,
-      `Replacement (${TotalCount.Replacement})`,
-      `Damage (${TotalCount.Damage})` ,
-      `Return Back To Vendor (${TotalCount.ReturnBack})`,
+      `Total Asset`,
+      `Deploy on FLoor`,
+      `In Stock`,
+      `Replacement`,
+      `Damage `,
+      `Return Back To Vendor `,
     ],
     counts: [Object.values(TotalCount)],
   };
   const tabArray2 = {
     title: ["DD Site", "OMR Site", "Mysore Site", "Belgaum Site"],
     cardTitle: [
-      `Total Asset (${TotalCount.Total})`,
-      `Replacement (${TotalCount.Replacement})`,
-      `In Stock (${TotalCount.InStock})`,
-      `DeployFLoor (${TotalCount.DeployFLoor})`,
-      `Damage (${TotalCount.Damage})`,
-      `Return Back To Vendor (${TotalCount.ReturnBack})`,
+      `Total Asset`,
+      `Replacement `,
+      `In Stock `,
+      `DeployFLoor `,
+      `Damage `,
+      `Return Back To Vendor `,
     ],
-    counts: [Object.values(DDSiteCount)],
-    counts: [
-      [1, 2, 3, 4, 5, 6],
-      [11, 12, 13, 14, 15, 16],
-      [10, 20, 30, 40, 50, 60],
-      [7, 8, 9, 10, 11, 12],
-    ],
+
+    counts: DDAssetsCount.map((item) => {
+      let a = Object.values(item);
+      a.shift();
+      return a;
+    }),
   };
   const tabArray3 = {
     title: [
@@ -87,84 +86,62 @@ export default function TabComponent() {
       "NXTGEN IT Solutions",
       "Sheeltron Digital Systems Pvt.Ltd.",
     ],
-    cardTitle: [
-      `Total Asset  (${TotalCount.Total})`,
-      `Desktop    (${TotalCount.Desktop})`,
-      `Laptop   (${TotalCount.Laptop})`,
-      
-    ],
-   counts: [Object.values(VendorAssets)],
-    counts: [
-      [1, 2, 3],
-      [4, 5, 6],
-      [7, 8, 9],
-    ],
-
+    cardTitle: [`Total Asset`, `Desktop`, `Laptop`],
+    counts: VendorAssets.map((item) => {
+      let a = Object.values(item);
+      a.shift();
+      return a;
+    }),
   };
 
   const ApiDataCall = () => {
-    // calling api here ..
     fetch("/api/TotalAssets")
-    
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
           SetTotalCount(data.items[0]);
-          
         }
-        // console.log("api data", data.items);
       })
       .catch((e) => {
         console.log(e);
-       });
+      });
   };
-  
 
   const ApiDataCall1 = () => {
     // calling api here ..
-    fetch("/api/DDSite")
-    
+    fetch("/api/DDAssets")
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
-          SetDDSiteCount(data.items[0]);
+          SetDDAssetsCount(data.items);
         }
-        // console.log("api data", data.items);
       })
       .catch((e) => {
         console.log(e);
       });
   };
-
 
   const ApiDataCall2 = () => {
-    // calling api here ..
     fetch("/api/VendorAssets")
-    
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
-          SetVendorAssets(data.items[0]);
-          
+          SetVendorAssets(data.items);
         }
-        // console.log("api data", data.items);
       })
       .catch((e) => {
         console.log(e);
       });
   };
+
   useEffect(() => {
     ApiDataCall();
     ApiDataCall1();
     ApiDataCall2();
-
   }, []);
-
-
 
   return (
     <Box sx={{ width: "100%" }}>
-      {console.log(TotalCount , DDSiteCount ,VendorAssets)}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
