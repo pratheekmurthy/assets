@@ -45,7 +45,7 @@ export default function TabComponent() {
   const [value, setValue] = useState(0);
   const [TotalCount, SetTotalCount] = useState([]);
   const [DDAssetsCount, SetDDAssetsCount] = useState([]);
-  const [VendorAssets, SetVendorAssets] = useState([]);
+  const [VendorAssetsCount, SetVendorAssetsCount] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -67,11 +67,11 @@ export default function TabComponent() {
     title: ["DD Site", "OMR Site", "Mysore Site", "Belgaum Site"],
     cardTitle: [
       `Total Asset`,
-      `Replacement `,
-      `In Stock `,
-      `DeployFLoor `,
-      `Damage `,
-      `Return Back To Vendor `,
+      `Replacement`,
+      `In Stock`,
+      `DeployFLoor`,
+      `Damage`,
+      `Return Back To Vendor`,
     ],
 
     counts: DDAssetsCount.map((item) => {
@@ -80,19 +80,28 @@ export default function TabComponent() {
       return a;
     }),
   };
+
+
   const tabArray3 = {
     title: [
       "Winger IT Solutions",
       "NXTGEN IT Solutions",
       "Sheeltron Digital Systems Pvt.Ltd.",
     ],
-    cardTitle: [`Total Asset`, `Desktop`, `Laptop`],
-    counts: VendorAssets.map((item) => {
+    cardTitle: [
+       `Total Asset`, 
+       `Desktop`, 
+       `Laptop`,
+  ],
+
+    counts: VendorAssetsCount.map((item) => {
       let a = Object.values(item);
       a.shift();
       return a;
+
     }),
   };
+
 
   const ApiDataCall = () => {
     fetch("/api/TotalAssets")
@@ -107,6 +116,7 @@ export default function TabComponent() {
       });
   };
 
+  
   const ApiDataCall1 = () => {
     // calling api here ..
     fetch("/api/DDAssets")
@@ -121,18 +131,22 @@ export default function TabComponent() {
       });
   };
 
+  
+
   const ApiDataCall2 = () => {
     fetch("/api/VendorAssets")
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
-          SetVendorAssets(data.items);
+          SetVendorAssetsCount(data.items);
         }
       })
       .catch((e) => {
         console.log(e);
       });
   };
+
+
 
   useEffect(() => {
     ApiDataCall();
