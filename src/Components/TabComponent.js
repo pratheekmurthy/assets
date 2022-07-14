@@ -212,7 +212,6 @@ export default function TabComponent() {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SelectSmall dropDownValues={sites} dropDown="Site" handleDropdown={handleDropdown} />
-        {/* <TabBody CardTitleArray={tabArray2} /> */}
         {
           selectedSiteAssets.length > 0 && <TabBody CardTitleArray={tabArray2} />
         }
