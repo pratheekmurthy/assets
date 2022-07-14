@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import TabBody from "./TabBody";
 import { useEffect } from "react";
 import { useState } from "react";
+import SelectSmall from './DropDown'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,9 +49,39 @@ export default function TabComponent() {
   const [TotalCount, SetTotalCount] = useState([]);
   const [DDAssetsCount, SetDDAssetsCount] = useState([]);
   const [VendorAssetsCount, SetVendorAssetsCount] = useState([]);
+  const [sites, setSites] = useState([])
+  const [vendors, setvendors] = useState([])
+  const [selectedSite, setSelectedSite] = useState([])
+  const [selectedSiteAssets, setSelectedSiteAssets] = useState([])
+  const [selectedVendor, setSelectedVendor] = useState([])
+  const [selectedVendorAssetsCount, setSelectedVendorAssetsCount] = useState([])
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  // change Event function for drop down values
+  const handleDropdown = (selectedDropDown, dropDown) => {
+    // if selected drop down value is vendor drop down the below if condition works
+    if (dropDown === "Vendor" && vendors.length > 0) {
+
+      // only selected sites details getting filtered from all sites 
+      const result = VendorAssetsCount.filter((vendor) => {
+        return vendor.SiteName === selectedDropDown
+      })
+      setSelectedVendor([selectedDropDown])
+      setSelectedVendorAssetsCount(result)
+    } else if (dropDown === "Site" && sites.length > 0) {    // if selected drop down value is Site drop down the  else condition works
+
+      // only the selected vendor details filtered from all the vendors list
+      const result = DDAssetsCount.filter((vendor) => {
+        return vendor.SiteName === selectedDropDown
+      })
+      setSelectedSite([selectedDropDown])
+      setSelectedSiteAssets(result)
+    }
+  }
+
 
 
   const tabArray1 = {
@@ -66,7 +97,7 @@ export default function TabComponent() {
     counts: [Object.values(TotalCount)],
   };
   const tabArray2 = {
-    title: ["DD Site", "OMR Site", "Mysore Site", "Belgaum Site"],
+    title: selectedSite,
     cardTitle: [
       `Total Asset`,
       `Replacement`,
@@ -75,7 +106,7 @@ export default function TabComponent() {
       `Damage`,
       `Return Back To Vendor`,
     ],
-  counts: DDAssetsCount.map((item) => {
+    counts: selectedSiteAssets.map((item) => {
       let a = Object.values(item);
       a.shift();
       return a;
@@ -84,19 +115,15 @@ export default function TabComponent() {
 
 
   const tabArray3 = {
-    title: [
-      "Winger IT Solutions",
-      "NXTGEN IT Solutions",
-      "Sheeltron Digital Systems Pvt.Ltd.",
-    ],
+    title: selectedVendor,
     cardTitle: [
-       `Total Asset`, 
-       `Desktop`, 
-       `Laptop`,
-  ],
+      `Total Asset`,
+      `Desktop`,
+      `Laptop`,
+    ],
 
 
-    counts: VendorAssetsCount.map((item) => {
+    counts: selectedVendorAssetsCount.map((item) => {
       let a = Object.values(item);
       a.shift();
       return a;
@@ -104,8 +131,8 @@ export default function TabComponent() {
     }),
   };
 
-  
-  const ApiDataCall = () => {
+
+  const TotalAssetsApiCall = () => {
     fetch("/api/TotalAssets")
       .then((res) => res.json())
       .then((data) => {
@@ -118,12 +145,20 @@ export default function TabComponent() {
       });
   };
 
-  const ApiDataCall1 = () => {
+  const Total_Assets_Api_call = () => {
     // calling api here ..
     fetch("/api/DDAssets")
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
+          const response = data.items
+          SetDDAssetsCount(response)
+          let sites = []
+          // only sites names getting pushed to a array from all the sites
+          response.map((ele) => {
+            return sites.push(ele.SiteName)
+          })
+          setSites(sites)
           SetDDAssetsCount(data.items);
         }
       })
@@ -132,12 +167,19 @@ export default function TabComponent() {
       });
   };
 
-  const ApiDataCall2 = () => {
+  const All_Vendors_Api_Call = () => {
     fetch("/api/VendorAssets")
       .then((res) => res.json())
       .then((data) => {
         if (data.total > 0) {
-          SetVendorAssetsCount(data.items);
+          const response = data.items
+          SetVendorAssetsCount(response)
+          let vendors = []
+          // only vendors names getting pushed to a array of all the sites
+          response.map((ele) => {
+            return vendors.push(ele.SiteName)
+          })
+          setvendors(vendors)
         }
       })
       .catch((e) => {
@@ -146,9 +188,10 @@ export default function TabComponent() {
   };
 
   useEffect(() => {
-    ApiDataCall();
-    ApiDataCall1();
-    ApiDataCall2();
+    // To call all the Api's once the Page loaded 
+    TotalAssetsApiCall();
+    Total_Assets_Api_call();
+    All_Vendors_Api_Call();
   }, []);
 
   return (
@@ -168,13 +211,22 @@ export default function TabComponent() {
         <TabBody CardTitleArray={tabArray1} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <TabBody CardTitleArray={tabArray2} />
+        <SelectSmall dropDownValues={sites} dropDown="Site" handleDropdown={handleDropdown} />
+        {/* <TabBody CardTitleArray={tabArray2} /> */}
+        {
+          selectedSiteAssets.length > 0 && <TabBody CardTitleArray={tabArray2} />
+        }
+
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <TabBody CardTitleArray={tabArray3} />
+        <SelectSmall dropDownValues={vendors} dropDown="Vendor" handleDropdown={handleDropdown} />
+        {
+          selectedVendorAssetsCount.length > 0 && <TabBody CardTitleArray={tabArray3} />
+        }
+
       </TabPanel>
     </Box>
   );
 
-  
+
 }
