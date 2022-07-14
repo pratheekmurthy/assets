@@ -28,6 +28,7 @@ function TabPanel(props) {
   );
 }
 
+
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -41,23 +42,24 @@ function a11yProps(index) {
   };
 }
 
+
 export default function TabComponent() {
   const [value, setValue] = useState(0);
   const [TotalCount, SetTotalCount] = useState([]);
   const [DDAssetsCount, SetDDAssetsCount] = useState([]);
   const [VendorAssetsCount, SetVendorAssetsCount] = useState([]);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
 
   const tabArray1 = {
     title: ["Total Assets Dashboard"],
     cardTitle: [
       `Total Asset`,
-      `Deploy on FLoor`,
-      `In Stock`,
       `Replacement`,
+      `In Stock`,
+      `Deploy on FLoor`,
       `Damage `,
       `Return Back To Vendor `,
     ],
@@ -73,8 +75,7 @@ export default function TabComponent() {
       `Damage`,
       `Return Back To Vendor`,
     ],
-
-    counts: DDAssetsCount.map((item) => {
+  counts: DDAssetsCount.map((item) => {
       let a = Object.values(item);
       a.shift();
       return a;
@@ -94,6 +95,7 @@ export default function TabComponent() {
        `Laptop`,
   ],
 
+
     counts: VendorAssetsCount.map((item) => {
       let a = Object.values(item);
       a.shift();
@@ -102,7 +104,7 @@ export default function TabComponent() {
     }),
   };
 
-
+  
   const ApiDataCall = () => {
     fetch("/api/TotalAssets")
       .then((res) => res.json())
@@ -116,7 +118,6 @@ export default function TabComponent() {
       });
   };
 
-  
   const ApiDataCall1 = () => {
     // calling api here ..
     fetch("/api/DDAssets")
@@ -131,8 +132,6 @@ export default function TabComponent() {
       });
   };
 
-  
-
   const ApiDataCall2 = () => {
     fetch("/api/VendorAssets")
       .then((res) => res.json())
@@ -145,8 +144,6 @@ export default function TabComponent() {
         console.log(e);
       });
   };
-
-
 
   useEffect(() => {
     ApiDataCall();
@@ -178,4 +175,6 @@ export default function TabComponent() {
       </TabPanel>
     </Box>
   );
+
+  
 }
